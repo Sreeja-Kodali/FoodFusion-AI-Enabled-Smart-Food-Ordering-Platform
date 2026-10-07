@@ -1,0 +1,29 @@
+{
+  "name": "OrderLineItemsEvent",
+  "namespace": "com.jeenu.avro.generated",
+  "type": "record",
+  "fields": [
+    {
+      "name": "id",
+      "type": "long"
+    },
+    {
+      "name": "skuCode",
+      "type": "string"
+    },
+    {
+      "name": "price",
+      "type":{
+        "type": "bytes",
+        "logicalType": "decimal",
+        "precision": 9,
+        "scale": 2
+
+      }
+    },
+    {
+      "name": "quantity",
+      "type": "int"
+    }
+  ]
+}

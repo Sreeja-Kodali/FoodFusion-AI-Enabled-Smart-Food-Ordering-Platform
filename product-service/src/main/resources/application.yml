@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: product-service
+  data:
+    mongodb:
+      database: foodfusion
+      uri: ${MONGODB_URI:mongodb://localhost:27017/foodfusion}
+
+server:
+  port: 8081
+
+eureka:  # Eureka client configs
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+management: # Distributed Tracing
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints: # Spring Boot Actuator (for health check and metrics endpoints)
+    web:
+      exposure:
+        include: "*"

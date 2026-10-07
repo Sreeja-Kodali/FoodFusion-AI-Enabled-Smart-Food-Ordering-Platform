@@ -1,0 +1,30 @@
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {url "https://packages.confluent.io/maven/"}
+    maven {url "https://jitpack.io"}
+}
+
+dependencies {
+
+    implementation 'com.jeenu:schemas:1.0'
+
+    implementation 'org.springframework.boot:spring-boot-starter'
+
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    //kafka
+    implementation 'org.springframework.kafka:spring-kafka'
+
+    //avro
+    implementation project(':schemas')
+    implementation("io.confluent:kafka-avro-serializer:7.6.0")
+}

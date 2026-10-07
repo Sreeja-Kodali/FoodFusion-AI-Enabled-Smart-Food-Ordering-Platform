@@ -1,0 +1,65 @@
+spring:
+  application:
+    name: order-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/order-service
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+  kafka:
+    template:
+      default-topic: order-topic
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+    properties:
+      schema.registry.url: http://localhost:8086
+
+server:
+  port: 8082
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+management: # management configuration
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints: # Spring Boot Actuator (for health check and metrics endpoints)
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+  tracing: #Distributed Tracing
+    sampling:
+      probability: 1.0
+
+resilience4j: # Resilience4j properties
+  circuitbreaker:
+    instances:
+      inventory: # user defined it can be anything
+        registerHealthIndicator: true # This enables a health indicator for the circuit breaker. This allows you to monitor the circuit breaker's state (open, closed, half-open) through actuator endpoints.
+        eventConsumerBufferSize: 10  # his sets the buffer size for circuit breaker events (e.g., transition from closed to open). Events exceeding this buffer size will be dropped.
+        slidingWindowType: COUNT_BASED # This configures the circuit breaker to use a count-based sliding window to track call failures. It will consider the last slidingWindowSize calls.
+        slidingWindowSize: 5 # This sets the size of the sliding window for the count-based approach. The circuit breaker will evaluate the failure rate within the last 5 calls.
+        failureRateThreshold: 50 # This defines the percentage of failures allowed within the sliding window before tripping the circuit breaker to open. In this case, if more than 50% of the last 5 calls to the inventory service fail, the circuit breaker opens.
+        waitDurationInOpenState: 5s # This sets the duration the circuit breaker remains open after tripping. After 5 seconds, it transitions to half-open to allow a limited number of calls to test if the service has recovered.
+        permittedNumberOfCallsInHalfOpenState: 3 # This defines the number of calls allowed during the half-open state. If all 3 calls succeed, the circuit breaker transitions back to closed. If any fail, it goes back to open.
+        automaticTransitionFromOpenToHalfOpenEnabled: true # This enables automatic transition from open to half-open state after the waitDurationInOpenState elapses.
+  timelimiter: # Resilience4j Timeout properties
+    instances:
+      inventory:
+        timeoutDuration: 3s
+  retry: # Resilience4j Retry properties
+    instances:
+      inventory:
+        maxAttempts: 3    # specifies that for the inventory instance, retries should be attempted up to a maximum of 3 times.
+        waitDuration: 5s  # specifies the duration to wait between retry attempts, with 5s representing 5 seconds. if failed wait for 5 seconds and retry for 3 times

@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: Discovery-service
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+server:
+  port: 8761
+
+management: #Distributed Tracing  sleuth is deprecated after prior to spring boot 3.x it was migrated to micrometer
+  tracing:
+    sampling:
+      probability: 1.0
+  ## Spring Boot Actuator (for health check and metrics endpoints)
+  endpoints:
+    web:
+      exposure:
+        include: "*"

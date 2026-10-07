@@ -1,0 +1,60 @@
+import com.github.davidmc24.gradle.plugin.avro.GenerateAvroJavaTask
+
+plugins {
+    id "java-library"
+    id "maven-publish" // allow us to publish different version to local/remote repository
+    //id "com.github.davidmc24.gradle.plugin.avro" version "1.0.0" // by default avro classes will be generated under build
+    id "com.github.davidmc24.gradle.plugin.avro-base" version "1.0.0" // used to generate avro classes in the custom path , run generateAvro to generate the classes
+}
+
+ext {
+    avroVersion = "1.10.0"
+}
+
+group 'com.jeenu'
+version '1.0'
+
+
+repositories {
+    mavenCentral()
+    maven { url "https://packages.confluent.io/maven/" }
+    maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    implementation 'org.apache.avro:avro:1.10.1'
+
+    //test-implementation
+    testImplementation "org.junit.jupiter:junit-jupiter:5.6.2"
+}
+
+tasks.named("bootJar") {
+    enabled = false
+}
+
+def generateAvro = tasks.register("generateAvro", GenerateAvroJavaTask) {
+    source("src/main/avro")
+    outputDir = file("src/main/java")
+}
+
+tasks.named("compileJava").configure {
+    source(generateAvro)
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication){
+            from components.java
+        }
+    }
+}
+
+//tasks.register('generateavro',com.commercehub.gradle.plugin.avro.GenerateAvroJavaTask)
+//        {
+//            source("src/main/avro")
+//            include("**/*.avsc")
+//            outputDir=file("src/main/java")
+//            outputs.upToDateWhen {false}
+//        }
+//
+//compileJava.source(generateavro.outputs)

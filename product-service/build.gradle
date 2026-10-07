@@ -1,0 +1,26 @@
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    implementation platform('org.testcontainers:testcontainers-bom:1.19.8') //import bom
+    testImplementation('org.testcontainers:mongodb') //no version specified
+    testImplementation "org.testcontainers:junit-jupiter" //no version specified since already specified in above testcontainers-bom
+
+    //@EnableEurekaClient is deprecated in latest version. So use @EnableDiscoveryClient
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+    // Distributed Tracing -Spring Cloud Sleuth will not work with Spring Boot 3.x onward. The last major version of Spring Boot that Sleuth will support is 2.x.
+    // sleuth is migrated to micrometer
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+    implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+}
+
+tasks.named('test') {
+    // Docker Desktop 4.92 requires API 1.40; docker-java defaults to 1.32.
+    systemProperty 'api.version', '1.40'
+}

@@ -1,0 +1,9 @@
+rootProject.name = 'spring-boot-microservices'
+include 'product-service'
+include 'order-service'
+include 'inventory-service'
+include 'discovery-server'
+include 'api-gateway'
+include 'schemas'
+include 'kafka-consumer'
+

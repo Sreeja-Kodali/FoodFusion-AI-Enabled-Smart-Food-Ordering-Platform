@@ -1,0 +1,62 @@
+server:
+  port: 8084
+spring:
+  application:
+    name: api-gateway
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      routes:
+        # documentation : https://cloud.spring.io/spring-cloud-gateway/reference/html/#global-filters
+
+        - id: product-service  # product-service route.
+          uri: lb://product-service
+          predicates:
+            - Path=/api/product       # important path P should be capital.
+
+        - id: order-service # order-service route.
+          uri: lb://order-service
+          predicates:
+            - Path=/api/order
+
+        - id: inventory-service # inventory-service route.
+          uri: lb://inventory-service
+          predicates:
+            - Path=/api/inventory, /api/inventory/{skuCode}
+
+        - id: discovery-server  # discovery-server route.
+          uri: http://localhost:8761  #--> to be redirected to.
+          predicates:
+            - Path=/eureka/web        # --> given path in url for the api gateway return only html page.
+          filters:
+            - SetPath=/
+
+        - id: discovery-server-static # discovery-server-static route
+          uri: http://localhost:8761
+          predicates:
+            - Path=/eureka/**         # -->  for the static resources like css, angular etc.
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/spring-boot-microservices-realm
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka  # to Interact with Eureka Discovery server
+
+logging:
+  level:
+    root: INFO
+    org.springframework.cloud.gateway.route.routeDefinitionLocator: INFO
+    org.springframework.cloud.gateway: TRACE
+
+management: #Distributed Tracing
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:  #Spring Boot Actuator (for health check and metrics endpoints)
+    web:
+      exposure:
+        include: "*"

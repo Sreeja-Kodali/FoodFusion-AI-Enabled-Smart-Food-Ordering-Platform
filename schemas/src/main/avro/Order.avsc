@@ -1,0 +1,25 @@
+{
+  "name": "OrderEvent",
+  "namespace": "com.jeenu.avro.generated",
+  "type": "record",
+  "fields": [
+    {
+      "name": "id",
+      "type": "long"
+    },
+    {
+      "name": "orderNumber",
+      "type": "string"
+    },
+    {
+      "name": "orderLineItemsList",
+      "type": {
+        "type": "array",
+        "items": {
+          "name": "orderLineItemsEvent",
+          "type": "OrderLineItemsEvent"
+        }
+      }
+    }
+  ]
+}

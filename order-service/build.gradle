@@ -1,0 +1,38 @@
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {url "https://packages.confluent.io/maven/"}
+    maven {url "https://jitpack.io"}
+}
+
+dependencies {
+    implementation project(':schemas')
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.hibernate.orm:hibernate-core:6.4.2.Final'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    //@EnableEurekaClient is deprecated in latest version. So use @EnableDiscoveryClient
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
+
+    // Distributed Tracing -Spring Cloud Sleuth will not work with Spring Boot 3.x onward. The last major version of Spring Boot that Sleuth will support is 2.x.
+    // sleuth is migrated to micrometer
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+    implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+
+    //kafka
+    implementation 'org.springframework.kafka:spring-kafka'
+
+    //avro
+    implementation "org.apache.avro:avro:1.10.1"
+    implementation("io.confluent:kafka-avro-serializer:7.6.0")
+}
