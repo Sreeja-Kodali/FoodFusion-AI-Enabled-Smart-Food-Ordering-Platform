@@ -1,0 +1,6 @@
+foodfusion:
+  kafka:
+    order-topic: order-topic
+    order-status-topic: order-status-topic
+  platform:
+    name: FoodFusion

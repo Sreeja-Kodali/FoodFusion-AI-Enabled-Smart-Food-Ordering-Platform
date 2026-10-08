@@ -1,6 +1,6 @@
 {
   "name": "OrderEvent",
-  "namespace": "com.jeenu.avro.generated",
+  "namespace": "com.foodfusion.avro.generated",
   "type": "record",
   "fields": [
     {
@@ -12,11 +12,16 @@
       "type": "string"
     },
     {
+      "name": "userId",
+      "type": "string",
+      "default": "anonymous"
+    },
+    {
       "name": "orderLineItemsList",
       "type": {
         "type": "array",
         "items": {
-          "name": "orderLineItemsEvent",
+          "name": "OrderLineItemsEvent",
           "type": "OrderLineItemsEvent"
         }
       }

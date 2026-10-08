@@ -3,6 +3,8 @@ server:
 spring:
   application:
     name: kafka-consumer
+  config:
+    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}
   kafka:
     consumer:
       bootstrap-servers: localhost:9092

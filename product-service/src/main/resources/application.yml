@@ -1,10 +1,17 @@
 spring:
   application:
     name: product-service
+  config:
+    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}
   data:
     mongodb:
-      database: foodfusion
-      uri: ${MONGODB_URI:mongodb://localhost:27017/foodfusion}
+      database: domain_db
+      uri: ${MONGODB_URI:mongodb://localhost:27017}
+      auto-index-creation: true
+
+foodfusion:
+  seed-data:
+    enabled: ${FOODFUSION_SEED_DATA:true}
 
 server:
   port: 8081
@@ -21,4 +28,4 @@ management: # Distributed Tracing
   endpoints: # Spring Boot Actuator (for health check and metrics endpoints)
     web:
       exposure:
-        include: "*"
+        include: health,info

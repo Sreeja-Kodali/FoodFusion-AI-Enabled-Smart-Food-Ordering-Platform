@@ -1,6 +1,8 @@
 spring:
   application:
-    name: Discovery-service
+    name: discovery-server
+  config:
+    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}
 eureka:
   instance:
     hostname: localhost
@@ -18,4 +20,4 @@ management: #Distributed Tracing  sleuth is deprecated after prior to spring boo
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: health,info

@@ -1,0 +1,31 @@
+server:
+  port: 8091
+
+spring:
+  application:
+    name: ai-assistant-service
+  config:
+    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017}
+      database: ai_db
+      auto-index-creation: true
+
+foodfusion:
+  food-service-url: ${FOOD_SERVICE_URL:http://localhost:8081}
+  ai:
+    endpoint: ${AI_PROVIDER_ENDPOINT:}
+    api-key: ${AI_PROVIDER_API_KEY:}
+    model: ${AI_MODEL:}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_DEFAULT_ZONE:http://localhost:8761/eureka}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

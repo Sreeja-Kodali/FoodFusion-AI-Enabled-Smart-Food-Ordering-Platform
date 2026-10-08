@@ -1,6 +1,6 @@
 {
   "name": "OrderLineItemsEvent",
-  "namespace": "com.jeenu.avro.generated",
+  "namespace": "com.foodfusion.avro.generated",
   "type": "record",
   "fields": [
     {

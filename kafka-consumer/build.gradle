@@ -13,8 +13,6 @@ repositories {
 
 dependencies {
 
-    implementation 'com.jeenu:schemas:1.0'
-
     implementation 'org.springframework.boot:spring-boot-starter'
 
     compileOnly 'org.projectlombok:lombok'

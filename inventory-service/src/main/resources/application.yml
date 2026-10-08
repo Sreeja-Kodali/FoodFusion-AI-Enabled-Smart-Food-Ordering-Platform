@@ -1,6 +1,8 @@
 spring:
   application:
     name: inventory-service
+  config:
+    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}
   datasource:
     url:  jdbc:mysql://localhost:3306/inventory-service
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -9,6 +11,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
+foodfusion:
+  seed-data:
+    enabled: ${FOODFUSION_SEED_DATA:true}
 
 eureka:
   client:
@@ -29,4 +35,4 @@ management: #Distributed Tracing
   endpoints: # Spring Boot Actuator (for health check and metrics endpoints)
     web:
       exposure:
-        include: "*"
+        include: health,info

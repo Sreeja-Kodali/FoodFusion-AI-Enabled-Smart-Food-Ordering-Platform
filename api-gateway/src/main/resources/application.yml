@@ -3,6 +3,8 @@ server:
 spring:
   application:
     name: api-gateway
+  config:
+    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}
   main:
     web-application-type: reactive
   cloud:
@@ -10,20 +12,45 @@ spring:
       routes:
         # documentation : https://cloud.spring.io/spring-cloud-gateway/reference/html/#global-filters
 
-        - id: product-service  # product-service route.
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/**
+
+        - id: product-service
           uri: lb://product-service
           predicates:
-            - Path=/api/product       # important path P should be capital.
+            - Path=/api/product/**,/api/product,/api/food/**,/api/foods/**,/api/foods
 
         - id: order-service # order-service route.
           uri: lb://order-service
           predicates:
-            - Path=/api/order
+            - Path=/api/order/**
 
         - id: inventory-service # inventory-service route.
           uri: lb://inventory-service
           predicates:
-            - Path=/api/inventory, /api/inventory/{skuCode}
+            - Path=/api/inventory/**
+
+        - id: workflow-service
+          uri: lb://workflow-service
+          predicates:
+            - Path=/api/workflows/**,/api/workflow/**
+
+        - id: notification-service
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/notifications/**
+
+        - id: analytics-service
+          uri: lb://analytics-service
+          predicates:
+            - Path=/api/analytics/**
+
+        - id: ai-assistant-service
+          uri: lb://ai-assistant-service
+          predicates:
+            - Path=/api/assistant/**,/api/ai/**
 
         - id: discovery-server  # discovery-server route.
           uri: http://localhost:8761  #--> to be redirected to.
@@ -36,11 +63,18 @@ spring:
           uri: http://localhost:8761
           predicates:
             - Path=/eureka/**         # -->  for the static resources like css, angular etc.
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowed-origins: ${FRONTEND_ORIGIN:http://localhost:5173}
+            allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+            allowed-headers: Authorization,Content-Type
+            allow-credentials: true
+foodfusion:
   security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8080/realms/spring-boot-microservices-realm
+    jwt:
+      secret: ${JWT_SECRET:}
+      issuer: ${JWT_ISSUER:http://localhost:8085}
 eureka:
   client:
     service-url:
@@ -50,7 +84,7 @@ logging:
   level:
     root: INFO
     org.springframework.cloud.gateway.route.routeDefinitionLocator: INFO
-    org.springframework.cloud.gateway: TRACE
+    org.springframework.cloud.gateway: INFO
 
 management: #Distributed Tracing
   tracing:
@@ -59,4 +93,4 @@ management: #Distributed Tracing
   endpoints:  #Spring Boot Actuator (for health check and metrics endpoints)
     web:
       exposure:
-        include: "*"
+        include: health,info
